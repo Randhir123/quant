@@ -12,6 +12,9 @@ on:
         required: true
         default: "This issue was created by a webhook triggering a GitHub Action."
 
+permissions:
+  issues: write
+
 jobs:
   create_issue:
     runs-on: ubuntu-latest
