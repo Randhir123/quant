@@ -1,0 +1,31 @@
+name: Create Issue from Webhook
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_title:
+        description: "Title of the issue"
+        required: true
+        default: "Potential Ransomware alert"
+      issue_body:
+        description: "Body of the issue"
+        required: true
+        default: "This issue was created by a webhook triggering a GitHub Action."
+
+jobs:
+  create_issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create GitHub Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Creating issue with title: ${{ github.event.inputs.issue_title }}"
+          curl -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github+json" \
+          -d '{"title": "${{ github.event.inputs.issue_title }}", "body": "${{ github.event.inputs.issue_body }}"}' \
+          https://api.github.com/repos/${{ github.repository }}/issues
